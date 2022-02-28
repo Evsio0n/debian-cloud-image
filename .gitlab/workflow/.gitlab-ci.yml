@@ -1,0 +1,55 @@
+#Auto generate Debian Cloud Image with cloud-init, using gitlab ci
+
+### Created at 2022-02-27 23:14:50 GMT+08:00
+### Author:   <evsio0n>
+### Email:    <bbq2001820@gmail.com>
+
+---
+stages:
+  - source test
+  - build
+
+variables:
+  COURLD_IMAGE_BUILD_ID: ${CI_COMMIT_REF_SLUG}
+  GIT_DEPTH: "1"
+
+
+
+before_script:
+  - apt-get update
+  - apt-get install --no-install-recommends -y python3-libcloud python3-marshmallow python3-yaml qemu-utils
+  - |
+    if [ "$CI_DISPOSABLE_ENVIRONMENT" ]; then
+         # Workaround unsupported SEEK_HOLE in overlayfs (Docker default)
+         mount -t tmpfs none /tmp
+       fi
+
+  test flake8:
+    stage: source test
+    image: debian:buster
+    script:
+      - >
+        apt-get install --no-install-recommends -y
+        python3-flake8
+      - pyhton3 -m flake8
+
+  test mypy:
+    stage: source test
+    image: debian:bullseye
+    script:
+      - >
+        apt-get install --no-install-recommends -y
+        python3-mypy
+      - mypy src
+    allow_failure: true
+
+  test package:
+    stage: source test
+    image: debian:buster
+    script:
+        - apt-get build-dep -y ./
+        - >
+          apt-get install --no-install-recommends -y
+          lintian
+        - DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -us -uc
+        - lintian ../*.changes
