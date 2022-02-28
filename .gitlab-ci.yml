@@ -39,7 +39,7 @@ test mypy:
   script:
     - >
       apt-get install --no-install-recommends -y
-      python3-mypy
+      python3-mypy mypy
     - mypy src
   allow_failure: true
 
