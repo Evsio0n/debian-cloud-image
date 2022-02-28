@@ -21,7 +21,7 @@ before_script:
   - |
     if [ "$CI_DISPOSABLE_ENVIRONMENT" ]; then
          # Workaround unsupported SEEK_HOLE in overlayfs (Docker default)
-         mount -t tmpfs none /tmp
+         #mount -t tmpfs none /tmp
        fi
 
 test flake8:
