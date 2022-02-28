@@ -38,7 +38,7 @@ test mypy:
   image: debian:bullseye
   script:
     - >
-       apt-get install --no-install-recommends -y
+      apt-get install --no-install-recommends -y
       python3-mypy
     - mypy src
   allow_failure: true
@@ -47,9 +47,9 @@ test package:
   stage: source test
   image: debian:buster
   script:
-      - apt-get build-dep -y ./
-      - >
-          apt-get install --no-install-recommends -y
-          lintian
-      - DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -us -uc
-      - lintian ../*.changes
+    - apt-get build-dep -y ./
+    - >
+      apt-get install --no-install-recommends -y
+      lintian
+    - DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -us -uc
+    - lintian ../*.changes
