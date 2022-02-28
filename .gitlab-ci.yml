@@ -31,7 +31,7 @@ test flake8:
     - >
       apt-get install --no-install-recommends -y
       python3-flake8
-    - pyhton3 -m flake8
+    - python3 -m flake8
 
 test mypy:
   stage: source test
