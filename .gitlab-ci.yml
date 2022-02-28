@@ -18,11 +18,11 @@ variables:
 before_script:
   - apt-get update
   - apt-get install --no-install-recommends -y python3-libcloud python3-marshmallow python3-yaml qemu-utils
-  - |
-    if [ "$CI_DISPOSABLE_ENVIRONMENT" ]; then
-         # Workaround unsupported SEEK_HOLE in overlayfs (Docker default)
-         #mount -t tmpfs none /tmp
-       fi
+#  - |
+#    if [ "$CI_DISPOSABLE_ENVIRONMENT" ]; then
+#      # Workaround unsupported SEEK_HOLE in overlayfs (Docker default)
+#      #mount -t tmpfs none /tmp
+#    fi
 
 test flake8:
   stage: source test
