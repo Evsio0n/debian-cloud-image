@@ -14,13 +14,19 @@ default:
     - debian
 
 buster:test:
+  stage: test
   script:
     - |
       echo -------------------
       echo "Debootstrap bullseye"
       echo -------------------
+    - sed -i 's/deb.debian.org/mirrors.xtom.com.hk/g' /etc/apt/sources.list
+    - |
+      echo -------------------
+      echo "Clean loopback device"
+      echo -------------------
+    - losetup -D /dev/loop0
     - >
-      sed -i 's/deb.debian.org/mirrors.xtom.com.hk/g' /etc/apt/sources.list
       apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo mount fdisk
     - |
@@ -52,4 +58,8 @@ buster:test:
       w # write the partition table
       q # and we're done
       EOF
+  allow_failure: true
 
+
+buster:clean:
+  stage: test
