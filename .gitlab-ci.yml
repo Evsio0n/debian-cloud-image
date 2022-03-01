@@ -14,7 +14,7 @@ buster:test:
   image: debian:bullseye
   script:
     - >
-      apt-get update && apt-get install 
+      apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo
     - |
       echo -------------------
