@@ -6,66 +6,45 @@
 
 ---
 stages:
-  - source test
+  - test
   - build
 
 variables:
-  COURLD_IMAGE_BUILD_ID: ${CI_COMMIT_REF_SLUG}
-  GIT_DEPTH: "1"
+  DEBIAN_SUITE: "buster","bullseye"
 
-
-
-before_script:
-  - apt-get update
-  - apt-get install --no-install-recommends -y python3-libcloud python3-marshmallow python3-yaml qemu-utils python3
-#  - |
-#    if [ "$CI_DISPOSABLE_ENVIRONMENT" ]; then
-#      # Workaround unsupported SEEK_HOLE in overlayfs (Docker default)
-#      #mount -t tmpfs none /tmp
-#    fi
-
-test flake8:
-  stage: source test
-  image: debian:buster
-  script:
-    - >
-      apt-get install --no-install-recommends -y
-      python3-flake8
-    - python3 -m flake8
-
-test mypy:
-  stage: source test
+test:bullseye:
   image: debian:bullseye
   script:
-    - >
-      apt-get install --no-install-recommends -y
-      python3-mypy mypy
-    - mypy src
-  allow_failure: true
+    - > 
+    sudo apt-get install 
+    debootstrap qemu-utils qemu-system genisoimage
+    - |
+      echo -------------------
+      echo "Debootstrap bullseye"
+      echo -------------------
+      mkdir ./debian-image
+      cd ./debian-image
+      echo -------------------
+      echo "Create loop image "
+      echo -------------------
+      dd if=/dev/zero of=debian-image.img bs=1M count=0 seek=10240 status=progress
+      losetup -f debian-image.img
+      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk cloud-ubuntu-image.raw
+      o # clear the in memory partition table
+      n # new partition
+      p # primary partition
+      1 # partition number 1 
+      # default - start at beginning of disk
+      +512M # 512 MB boot parttion
+      n # new partition
+      p # primary partition
+      2 # partion number 2
+      # default, start immediately after preceding partition
+      # default, extend partition to end of disk
+      a # make a partition bootable
+      1 # bootable partition is partition 1 -- /dev/loop0p1
+      p # print the in-memory partition table
+      w # write the partition table
+      q # and we're done
+      EOF
 
-test package:
-  stage: source test
-  image: debian:buster
-  script:
-    - apt-get build-dep -y ./
-    - >
-      apt-get install --no-install-recommends -y
-      lintian
-    - DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -us -uc
-    - lintian ../*.changes
-
-test pytest:
-  stage: source test
-  image: debian:buster
-  script:
-    - >
-      apt-get install --no-install-recommends -y
-      python3-pytest python3-pytest-cov
-    - >
-      PYTHONPATH=src
-      py.test-3
-      -vrxXs
-      --color=yes
-      --cov=src --cov-report=term --cov-report=html:coverage
-      --junit-xml=junit.xml
-      tests
