@@ -20,7 +20,7 @@ buster:test:
       echo "Debootstrap bullseye"
       echo -------------------
     - >
-      sudo apt-get update && apt-get install -y
+      apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo mount
     - |
       mkdir ./debian-image
