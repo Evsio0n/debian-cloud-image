@@ -11,7 +11,7 @@ stages:
 
 default:
   tags:
-    - non-docker
+    - debian
 
 buster:test:
   script:
