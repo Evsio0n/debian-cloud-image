@@ -26,6 +26,7 @@ buster:test:
       echo "Create loop image "
       echo -------------------
       dd if=/dev/zero of=debian-image.img bs=1M count=0 seek=10240 status=progress
+      mknod /dev/loop0 b 7 0
       losetup -f debian-image.img
       sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk cloud-ubuntu-image.raw
       o # clear the in memory partition table
