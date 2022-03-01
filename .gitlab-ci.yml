@@ -13,8 +13,16 @@ default:
   tags:
     - debian
 
+buster:test:losetup:
+  stage: test
+  script:
+    - losetup -f
+  allow_failure: false
+
 buster:test:
   stage: test
+  when:
+
   script:
     - |
       echo -------------------
@@ -25,7 +33,7 @@ buster:test:
       echo -------------------
       echo "Clean loopback device"
       echo -------------------
-    - losetup -D /dev/loop0
+    - losetup -D
     - >
       apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo mount fdisk
@@ -58,6 +66,5 @@ buster:test:
       w # write the partition table
       q # and we're done
       EOF
-  allow_failure: true
 
 
