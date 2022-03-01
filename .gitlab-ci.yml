@@ -20,6 +20,7 @@ buster:test:
       echo "Debootstrap bullseye"
       echo -------------------
     - >
+      sed -i 's/deb.debian.org/mirrors.xtom.com.hk/g' /etc/apt/sources.list
       apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo mount fdisk
     - |
