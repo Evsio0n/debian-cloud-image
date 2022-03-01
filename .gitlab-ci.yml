@@ -33,7 +33,7 @@ buster:test:
       echo "Make temp mount point"
       echo -------------------
       losetup -f debian-image.img
-      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk cloud-ubuntu-image.raw
+      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk ./debian-image.img
       o # clear the in memory partition table
       n # new partition
       p # primary partition
