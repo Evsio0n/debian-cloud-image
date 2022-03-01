@@ -19,13 +19,6 @@ buster:test:
       echo -------------------
       echo "Debootstrap bullseye"
       echo -------------------
-      echo "change source.list"
-      cat <<EOF > /etc/apt/sources.list
-      deb http://mirrors.xtom.com/debian/ stable main contrib non-free
-      deb-src http://mirrors.xtom.com/debian/ stable main contrib non-free
-      deb http://mirrors.xtom.com/debian/ stable-proposed-updates main contrib non-free
-      deb-src http://mirrors.xtom.com/debian/ stable-proposed-updates main contrib non-free
-      EOF
     - >
       apt-get update && apt-get install -y
       debootstrap qemu-utils qemu-system genisoimage sudo
@@ -39,9 +32,6 @@ buster:test:
       echo -------------------
       echo "Make temp mount point"
       echo -------------------
-      mkdir -p /tmp/dev
-      mount -t devtmpfs none /tmp/dev
-      mknod /tmp/dev/loop0 b 7 0
       losetup -f debian-image.img
       sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk cloud-ubuntu-image.raw
       o # clear the in memory partition table
