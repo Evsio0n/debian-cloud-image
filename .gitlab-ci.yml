@@ -21,7 +21,7 @@ buster:test:
       echo -------------------
     - >
       apt-get update && apt-get install -y
-      debootstrap qemu-utils qemu-system genisoimage sudo
+      debootstrap qemu-utils qemu-system genisoimage sudo mount
     - |
       mkdir ./debian-image
       cd ./debian-image
