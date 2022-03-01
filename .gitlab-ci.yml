@@ -21,8 +21,7 @@ buster:test:losetup:
 
 buster:test:
   stage: test
-  when:
-
+  needs: ["buster:test:losetup"]
   script:
     - |
       echo -------------------
