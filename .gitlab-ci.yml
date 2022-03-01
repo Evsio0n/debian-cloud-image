@@ -61,5 +61,3 @@ buster:test:
   allow_failure: true
 
 
-buster:clean:
-  stage: test
