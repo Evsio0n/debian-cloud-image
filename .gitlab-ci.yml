@@ -15,7 +15,7 @@ buster:test:
   script:
     - >
       sudo apt-get install 
-      debootstrap qemu-utils qemu-system genisoimage
+      debootstrap qemu-utils qemu-system genisoimage sudo
     - |
       echo -------------------
       echo "Debootstrap bullseye"
