@@ -9,15 +9,13 @@ stages:
   - test
   - build
 
-variables:
-  DEBIAN_SUITE: "buster","bullseye"
 
-test:bullseye:
+buster:test:
   image: debian:bullseye
   script:
-    - > 
-    sudo apt-get install 
-    debootstrap qemu-utils qemu-system genisoimage
+    - >
+      sudo apt-get install 
+      debootstrap qemu-utils qemu-system genisoimage
     - |
       echo -------------------
       echo "Debootstrap bullseye"
