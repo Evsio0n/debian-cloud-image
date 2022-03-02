@@ -4,7 +4,7 @@
 
 1. Install the base system
 
-```
+```shell
    sudo apt-get install \
    debootstrap \
    qemu-utils \
@@ -12,22 +12,22 @@
    genisoimage
 ```
 
-```
+```shell
 mkdir $HOME/debian-image
 ```
 
 2. Create the image
 
-```
+```shell
 cd $HOME/debian-image
 ```
 
-```
+```shell
 # Create a loop image at 10G size 
 dd if=/dev/zero of=debian-image.img bs=1M count=0 seek=10240 status=progress
 ```
 
-```
+```shell
 # Create a loop device
 sudo losetup -f debian-image.img
 # Create Partition
@@ -53,7 +53,7 @@ EOF
 
 3. Create the filesystem
 
-```
+```shell
 losetup -fP ./debian-image.img
 losetup -a
 # Format the partition
@@ -83,7 +83,7 @@ sudo mount --bind /dev ./chroot/dev
 sudo mount --bind /run ./chroot/run
 ```
 
-```
+```shell
 #enter chroot
 sudo chroot ./chroot
 mount none -t proc /proc
@@ -94,7 +94,7 @@ export LC_ALL=C
 echo "hostname" > /etc/hostname
 ```
 
-```
+```shell
 #change apt source
 cat <<EOF > /etc/apt/sources.list
 deb https://mirrors.xtom.com/debian/ stable main contrib non-free
@@ -103,7 +103,7 @@ deb-src https://mirrors.xtom.com/debian/ stable-proposed-updates main contrib no
 EOF
 ```
 
-```
+```shell
 #configure fstab
 cat <<EOF > /etc/fstab
 # /etc/fstab: static file system information.
@@ -118,7 +118,7 @@ cat <<EOF > /etc/fstab
 EOF
 ```
 
-```
+```shell
 #install systemd
 apt-get install -y systemd-sysv
 #create machine-id
@@ -143,7 +143,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     linux-image-amd64
 ```
 
-```
+```shell
 #configure network
 cat <<EOF > /etc/network/interfaces
 # This file describes the network interfaces available on your system
@@ -157,7 +157,7 @@ iface lo inet loopback
 EOF
 ```
 
-```
+```shell
 # Set time zone
 echo "Asia/Hong_Kong" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
@@ -169,7 +169,7 @@ echo "resolvconf    resolvconf/linkify-resolvconf   boolean true" > /tmp/config.
 DEBCONF_DB_OVERRIDE='File {/tmp/config.dat}' dpkg-reconfigure -fnoninteractive resolvconf
 ```
 
-```
+```shell
 cat <<EOF > /etc/NetworkManager/NetworkManager.conf
 [main]
 rc-manager=resolvconf
@@ -181,13 +181,13 @@ managed=false
 EOF
 ```
 
-```
+```shell
 #setup grub
 grub-install --recheck /dev/loop0
 update-grub
 ```
 
-```
+```shell
 #clean up
 truncate -s 0 /etc/machine-id
 dpkg-divert --rename --remove /sbin/initctl
@@ -198,7 +198,7 @@ export HISTSIZE=0
 exit
 ```
 
-```
+```shell
 #umounnt all
 umount ./chroot/dev
 umount ./chroot/run
@@ -209,7 +209,7 @@ losetup -D
 
 3. Create qcow2 image
 
-```
+```shell
 qemu-img convert -p -f raw  ./debian-image.img -O qcow2 debian.qcow2
 
 ```
