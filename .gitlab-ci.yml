@@ -106,7 +106,8 @@ buster:test:
       $(cat ../file-replacement/nexet-mot.d > ./chroot/etc/motd)
       chmod +x ./chroot/install-chroot.sh
       chroot ./chroot bash ./install-chroot.sh
-      ls
+      ls ./chroot/
+      df -h
       umount ./chroot/dev
       umount ./chroot/run
       umount ./chroot/boot
