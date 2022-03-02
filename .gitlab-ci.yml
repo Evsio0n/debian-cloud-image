@@ -98,7 +98,7 @@ buster:test:
       echo "Start cloud-init"
       echo -------------------
       ls ../
-      cp ../package.list > ./chroot/
+      cp ../package.list ./chroot/
       cp  ../install-chroot.sh ./chroot/
       echo -------------------
       echo "Install custom motd"
