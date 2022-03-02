@@ -106,6 +106,9 @@ buster:test:
       $(cat ../file-replacement/nexet-mot.d > ./chroot/etc/motd)
       chmod +x ./chroot/install-chroot.sh
       chroot ./chroot bash ./install-chroot.sh
+      df -h
+      ls -la ./
+      ls -la ../
       umount -l  ./chroot/dev/pts ./chroot/dev ./chroot/proc ./chroot/sys ./chroot/run ./chroot/boot
       umount  ./chroot
       qemu-img convert -p -f raw  ./debian-image.img -O qcow2 debian.qcow2
