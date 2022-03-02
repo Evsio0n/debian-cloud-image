@@ -97,17 +97,16 @@ buster:test:
       echo -------------------
       echo "Start cloud-init"
       echo -------------------
-      chroot ./chroot
-      mount none -t proc /proc
-      mount none -t sysfs /sys
-      mount none -t devpts /dev/pts
-      export HOME=/root
-      export LC_ALL=C
-      echo "hostname" > /etc/hostname
+      chroot ./chroot mount none -t proc /proc
+      chroot ./chroot mount none -t sysfs /sys
+      chroot ./chroot mount none -t devpts /dev/pts
+      chroot ./chroot export HOME=/root
+      chroot ./chroot export LC_ALL=C
+      chroot ./chroot echo "hostname" > /etc/hostname
       echo -------------------
       echo "Change disk apt source"
       echo -------------------
-      cat <<EOF > /etc/apt/sources.list
+      chroot ./chroot cat <<EOF > /etc/apt/sources.list
       deb https://mirrors.xtom.com/debian/ stable main contrib non-free
       deb-src https://mirrors.xtom.com/debian/ stable main contrib non-free
       deb-src https://mirrors.xtom.com/debian/ stable-proposed-updates main contrib non-free
@@ -115,7 +114,7 @@ buster:test:
       echo -------------------
       echo "Configure fstab"
       echo -------------------
-      cat <<EOF > /etc/fstab
+      chroot ./chroot cat <<EOF > /etc/fstab
       # /etc/fstab: static file system information.
       #
       # Use 'blkid' to print the universally unique identifier for a
@@ -129,21 +128,21 @@ buster:test:
       echo -------------------
       echo "Install systemd"
       echo -------------------
-      DEBIAN_FRONTEND=noninteractive apt-get install -y systemd-sysv
+      chroot ./chroot DEBIAN_FRONTEND=noninteractive apt-get install -y systemd-sysv
       echo -------------------
       echo "Configure machine-id"
       echo -------------------
-      dbus-uuidgen > /etc/machine-id
-      ln -fs /etc/machine-id /var/lib/dbus/machine-id
+      chroot ./chroot dbus-uuidgen > /etc/machine-id
+      chroot ./chroot ln -fs /etc/machine-id /var/lib/dbus/machine-id
       echo -------------------
       echo "Configure divert"
       echo -------------------
-      dpkg-divert --local --rename --add /sbin/initctl
-      ln -s /bin/true /sbin/initctl
+      chroot ./chroot dpkg-divert --local --rename --add /sbin/initctl
+      chroot ./chroot ln -s /bin/true /sbin/initctl
       echo -------------------
       echo "Configure cloud-init"
       echo -------------------
-      DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      chroot ./chroot DEBIAN_FRONTEND=noninteractive apt-get install -y \
         os-prober \
         ifupdown \
         network-manager \
@@ -159,7 +158,7 @@ buster:test:
       echo -------------------
       echo "Configure network"
       echo -------------------
-      cat <<EOF > /etc/network/interfaces
+      chroot ./chroot cat <<EOF > /etc/network/interfaces
       # This file describes the network interfaces available on your system
       # and how to activate them. For more information, see interfaces(5).
       
@@ -172,22 +171,22 @@ buster:test:
       echo -------------------
       echo "Configure timezone"
       echo -------------------
-      echo "Asia/Hong_Kong" > /etc/timezone
-      dpkg-reconfigure -f noninteractive tzdata
+      chroot ./chroot echo "Asia/Hong_Kong" > /etc/timezone
+      chroot ./chroot dpkg-reconfigure -f noninteractive tzdata
       echo -------------------
       echo "Configure locale"
       echo -------------------
-      echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-      locale-gen
+      chroot ./chroot echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+      chroot ./chroot locale-gen
       echo -------------------
       echo "Configure resolv.conf"
       echo -------------------
-      echo "resolvconf    resolvconf/linkify-resolvconf   boolean true" > /tmp/config.dat
-      DEBCONF_DB_OVERRIDE='File {/tmp/config.dat}' dpkg-reconfigure -fnoninteractive resolvconf
+      chroot ./chroot echo "resolvconf    resolvconf/linkify-resolvconf   boolean true" > /tmp/config.dat
+      chroot ./chroot DEBCONF_DB_OVERRIDE='File {/tmp/config.dat}' dpkg-reconfigure -fnoninteractive resolvconf
       echo -------------------
       echo "Configure networkmanager"
       echo -------------------
-      cat <<EOF > /etc/NetworkManager/NetworkManager.conf
+      chroot ./chroot cat <<EOF > /etc/NetworkManager/NetworkManager.conf
       [main]
       rc-manager=resolvconf
       plugins=ifupdown,keyfile
@@ -199,8 +198,8 @@ buster:test:
       echo -------------------
       echo "Configure grub"
       echo -------------------
-      grub-install --recheck ${cat ./.loopnum}
-      update-grub
+      chroot ./chroot grub-install --recheck ${cat ./.loopnum}
+      chroot ./chroot update-grub
       
       echo -------------------
       echo "Configure done! Installing custom files"
@@ -209,14 +208,13 @@ buster:test:
       echo -------------------
       echo "Install custom motd"
       echo -------------------
-      cat ./file-replacement/nexet-mot.d > ./chroot/etc/motd
+      chroot ./chroot cat ./file-replacement/nexet-mot.d > ./chroot/etc/motd
       echo -------------------
       echo "Install custom packages"
       echo -------------------
-      cat ./packages.list > ./chroot/packages.list
-      chroot ./chroot
-      DEBIAN_FRONTEND=noninteractive apt-get install -y -f -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $(cat ./packages.list)
-      rm ./packages.list
+      cat ./package.list > ./chroot/packages.list
+      chroot ./chroot DEBIAN_FRONTEND=noninteractive apt-get install -y -f -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $(cat ./package.list)
+      chroot ./chroot rm ./packages.list
       echo -------------------
       echo "Installation complete!"
       echo -------------------
@@ -224,14 +222,13 @@ buster:test:
       echo -------------------
       echo "Cleanup"
       echo -------------------
-      DEBIAN_FRONTEND=noninteractive apt-get -y autoremove
-      truncate -s 0 /etc/machine-id
-      dpkg-divert --rename --remove /sbin/initctl
-      apt-get clean
-      rm -rf /tmp/* ~/.bash_history
-      umount -l /proc /sys /dev/pts
-      export HISTSIZE=0
-      exit
+      chroot ./chroot DEBIAN_FRONTEND=noninteractive apt-get -y autoremove
+      chroot ./chroot truncate -s 0 /etc/machine-id
+      chroot ./chroot dpkg-divert --rename --remove /sbin/initctl
+      chroot ./chroot apt-get clean
+      chroot ./chroot rm -rf /tmp/* ~/.bash_history
+      chroot ./chroot umount -l /proc /sys /dev/pts
+      chroot ./chroot export HISTSIZE=0
       umount ./chroot/dev
       umount ./chroot/run
       umount ./chroot/boot
