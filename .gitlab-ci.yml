@@ -50,7 +50,7 @@ buster:test:
       echo "Repartition image"
       echo -------------------
       losetup -f debian-image.img
-      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk $LOOPDISK
+      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk ./debian-image.img
       o # clear the in memory partition table
       n # new partition
       p # primary partition
