@@ -45,13 +45,12 @@ buster:test:
       echo -------------------
       echo "Create loop image "
       echo -------------------
-      dd if=/dev/zero of=debian-image.img bs=1M count=0 seek=10240 status=progress
+      dd if=/dev/zero of=debian-image.img bs=1M count=0 seek=10240 status=progress 
       echo -------------------
-      echo "Make temp mount point"
-      echo "Get first available loop device"
+      echo "Repartition image"
       echo -------------------
       losetup -f debian-image.img
-      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk ./debian-image.img
+      sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk $LOOPDISK
       o # clear the in memory partition table
       n # new partition
       p # primary partition
@@ -69,10 +68,6 @@ buster:test:
       w # write the partition table
       q # and we're done
       EOF
-      echo -------------------
-      echo "Umount loop device"
-      echo -------------------
-      umount ./debian-image.img
       echo -------------------
       echo "Start building debian image"
       echo -------------------
