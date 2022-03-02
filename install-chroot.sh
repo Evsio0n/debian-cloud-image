@@ -30,6 +30,7 @@ EOF
 echo -------------------
 echo "Install systemd"
 echo -------------------
+apt update
 apt-get install -y systemd-sysv
 echo -------------------
 echo "Configure machine-id"
