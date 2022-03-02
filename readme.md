@@ -1,5 +1,7 @@
 # auto generated cloud-image for debian 
 
+![](https://git.host.nexet.hk/evsio0n/debian-cloudinit-image/badges/main/pipeline.svg)
+
 ## Description
 
 1. Install the base system
