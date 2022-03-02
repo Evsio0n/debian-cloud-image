@@ -97,6 +97,7 @@ buster:test:
       echo -------------------
       echo "Start cloud-init"
       echo -------------------
+      ls
       cat ./package.list > ./chroot/packages.list
       cp ./install-chroot.sh ./chroot/
       echo -------------------
