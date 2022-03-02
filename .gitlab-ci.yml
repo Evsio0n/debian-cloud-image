@@ -84,7 +84,6 @@ buster:test:
       mount /${LOOPNUM}p2 ./chroot/boot
       echo $LOOPNUM > ./chroot/.loopnum
       wget https://ftp-master.debian.org/keys/release-11.asc -qO- | gpg --import --no-default-keyring --keyring ./debian-release-11.gpg
-      PACKAGE_INCLUDE=$(cat ./package.list | tr '\n' ' ')
       debootstrap  \
         --keyring=./debian-release-11.gpg \
         --arch=amd64  \
