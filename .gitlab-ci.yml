@@ -100,8 +100,8 @@ buster:test:
       chroot ./chroot mount none -t proc /proc
       chroot ./chroot mount none -t sysfs /sys
       chroot ./chroot mount none -t devpts /dev/pts
-      chroot ./chroot export HOME=/root
-      chroot ./chroot export LC_ALL=C
+      #chroot ./chroot export HOME=/root
+      #chroot ./chroot export LC_ALL=C
       chroot ./chroot echo "hostname" > /etc/hostname
       echo -------------------
       echo "Change disk apt source"
