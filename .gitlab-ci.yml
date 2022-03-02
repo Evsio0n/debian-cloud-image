@@ -117,4 +117,4 @@ buster:test:
       losetup -D
   artifacts:
     paths:
-      - debian.qcow2
+      - ./debian-image/debian.qcow2
