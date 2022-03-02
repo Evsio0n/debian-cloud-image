@@ -128,6 +128,5 @@ truncate -s 0 /etc/machine-id
 dpkg-divert --rename --remove /sbin/initctl
 apt-get clean
 rm -rf /tmp/* ~/.bash_history
-umount -l /proc /sys /dev/pts
 export HISTSIZE=0
 exit 0
