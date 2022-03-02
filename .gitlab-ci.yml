@@ -76,12 +76,13 @@ buster:test:
       echo "First loop device is $LOOPNUM"
       echo -------------------
       losetup -fP ./debian-image.img
-      mkfs.ext4 /dev/${LOOPNUM}p1
-      mkfs.ext4 /dev/${LOOPNUM}p2
+      mkfs.ext4 ${LOOPNUM}p1
+      mkfs.ext4 ${LOOPNUM}p2
       mkdir ./chroot
-      mount /dev/${LOOPNUM}p1 ./chroot
+      mount ${LOOPNUM}p1 ./chroot
       mkdir ./chroot/boot
-      mount /dev/${LOOPNUM}p2 ./chroot/boot
+      mount /${LOOPNUM}p2 ./chroot/boot
+      echo $LOOPNUM > ./chroot/.loopnum
       wget https://ftp-master.debian.org/keys/release-11.asc -qO- | gpg --import --no-default-keyring --keyring ./debian-release-11.gpg
       PACKAGE_INCLUDE=$(cat ./package.list | tr '\n' ' ')
       debootstrap  \
@@ -199,7 +200,7 @@ buster:test:
       echo -------------------
       echo "Configure grub"
       echo -------------------
-      grub-install --recheck /dev/loop0
+      grub-install --recheck ${cat ./.loopnum}
       update-grub
       
       echo -------------------
