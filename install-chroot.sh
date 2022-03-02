@@ -3,6 +3,7 @@ mount none -t sysfs /sys
 mount none -t devpts /dev/pts
 export HOME=/root
 export LC_ALL=C
+export DEBIAN_FRONTEND=noninteractive
 echo "hostname" > /etc/hostname
 echo -------------------
 echo "Change disk apt source"
@@ -29,7 +30,7 @@ EOF
 echo -------------------
 echo "Install systemd"
 echo -------------------
-DEBIAN_FRONTEND=noninteractive apt-get install -y systemd-sysv
+apt-get install -y systemd-sysv
 echo -------------------
 echo "Configure machine-id"
 echo -------------------
@@ -43,7 +44,7 @@ ln -s /bin/true /sbin/initctl
 echo -------------------
 echo "Configure cloud-init"
 echo -------------------
-DEBIAN_FRONTEND=noninteractive apt-get install -y \
+apt-get install -y \
   os-prober \
   ifupdown \
   network-manager \
@@ -78,12 +79,12 @@ echo -------------------
 echo "Configure locale"
 echo -------------------
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-locale-gen
+$(locale-gen)
 echo -------------------
 echo "Configure resolv.conf"
 echo -------------------
 echo "resolvconf    resolvconf/linkify-resolvconf   boolean true" > /tmp/config.dat
-DEBCONF_DB_OVERRIDE='File {/tmp/config.dat}' dpkg-reconfigure -fnoninteractive resolvconf
+$(DEBCONF_DB_OVERRIDE='File {/tmp/config.dat}' dpkg-reconfigure -fnoninteractive resolvconf)
 echo -------------------
 echo "Configure networkmanager"
 echo -------------------
@@ -99,22 +100,18 @@ EOF
 echo -------------------
 echo "Configure grub"
 echo -------------------
-grub-install --recheck ${cat ./.loopnum}
-update-grub
+$(grub-install --recheck ${cat ./.loopnum})
+$(update-grub)
       
 echo -------------------
 echo "Configure done! Installing custom files"
 echo -------------------
 exit
 echo -------------------
-echo "Install custom motd"
-echo -------------------
-cat ./file-replacement/nexet-mot.d > ./chroot/etc/motd
-echo -------------------
 echo "Install custom packages"
 echo -------------------
-cat ./package.list > ./chroot/packages.list
-DEBIAN_FRONTEND=noninteractive apt-get install -y -f -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $(cat ./package.list)
+# shellcheck disable=SC2046
+apt-get install -y -f -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $(cat ./package.list)
 rm ./packages.list
 echo -------------------
 echo "Installation complete!"
@@ -123,7 +120,7 @@ echo -------------------
 echo -------------------
 echo "Cleanup"
 echo -------------------
-DEBIAN_FRONTEND=noninteractive apt-get -y autoremove
+apt-get -y autoremove
 truncate -s 0 /etc/machine-id
 dpkg-divert --rename --remove /sbin/initctl
 apt-get clean
