@@ -98,12 +98,12 @@ buster:test:
       echo "Start cloud-init"
       echo -------------------
       ls
-      cat ./package.list > ./chroot/packages.list
-      cp ./install-chroot.sh ./chroot/
+      cat ../package.list > ./chroot/packages.list
+      cp  ../install-chroot.sh ./chroot/
       echo -------------------
       echo "Install custom motd"
       echo -------------------
-      $(cat ./file-replacement/nexet-mot.d > ./chroot/etc/motd)
+      $(cat ../file-replacement/nexet-mot.d > ./chroot/etc/motd)
       chmod +x ./chroot/install-chroot.sh
       chroot ./chroot ./install-chroot.sh
       umount ./chroot/dev
