@@ -101,7 +101,9 @@ EOF
 echo -------------------
 echo "Configure grub"
 echo -------------------
-$(grub-install --recheck ${cat ./.loopnum})
+# shellcheck disable=SC2091
+# shellcheck disable=SC2046
+$(grub-install --recheck $(cat ./.loopnum))
 $(update-grub)
       
 echo -------------------
